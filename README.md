@@ -3,49 +3,86 @@
 **Hazırlayan:** Fatma Yeliz Apaydın  
 **Ders:** BGT208 Güvenli Web Yazılımı Geliştirme
 
-## 1. Projenin Amacı
-Bu çalışma, web uygulamalarının siber saldırılara karşı ilk savunma hattı olan **HTTP Güvenlik Başlıkları'nın (Security Headers)** analizini ve yapılandırmasını konu almaktadır. 10 farklı popüler web sitesi üzerinden gerçekleştirilen bu denetim, modern web saldırılarına (XSS, MITM, Clickjacking) karşı sunucu tarafındaki zafiyetleri ortaya koymayı hedefler.
+<div align="center">
+  <a href="https://istinye.edu.tr">
+    <img src="https://istinye.edu.tr/sites/default/files/inline-images/istinye-universitesi-logo.png" alt="Istinye University" width="180"/>
+  </a>
 
-## 2. 10 Popüler Web Sitesi Güvenlik Denetim Raporu
-Aşağıdaki siteler, `SecurityHeaders.com` standartları baz alınarak analiz edilmiştir:
+  # Web Uygulamaları Güvenlik Konfigürasyon Denetimi (Pentest-Audit)
 
-| Site Adı | Skor | Kritik Eksiklik / Zayıflık |
-| :--- | :---: | :--- |
-| **google.com** | A+ | - (Tüm başlıklar optimize) |
-| **facebook.com** | A | `Permissions-Policy` zayıf |
-| **github.com** | A | `Permissions-Policy` eksikliği |
-| **wikipedia.org**| B | `CSP` ve `Permissions-Policy` yok |
-| **imdb.com** | B | `CSP` yapılandırması yetersiz |
-| **istinye.edu.tr**| C | `HSTS` ve `CSP` tanımlı değil |
-| **milliyet.com.tr**| D | Kritik başlıkların çoğu eksik |
-| **hurriyet.com.tr**| D | `CSP` ve `HSTS` eksik |
-| **n11.com** | C | `X-Frame-Options` hatalı |
-| **sahibinden.com**| C | `CSP` başlığı eksik |
+  ![GitHub](https://img.shields.io/badge/GitHub-Public-green?style=flat-square&logo=github)
+  ![Status](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
+  ![Course](https://img.shields.io/badge/Course-BGT208-purple?style=flat-square)
+</div>
 
-## 3. Bulgular ve Teknik Risk Analizi
+---
 
-### 3.1. Content-Security-Policy (CSP)
-* **Risk:** CSP bulunmayan siteler, XSS (Cross-Site Scripting) saldırılarına karşı tamamen savunmasızdır. Saldırganlar zararlı scriptleri siteye enjekte edebilir.
-* **Doğru Uygulama:** `Content-Security-Policy: default-src 'self';`
+## 🎓 Instructor / Danışman
+| | |
+|---|---|
+| **Name** | Keyvan Arasteh |
+| **Website** | [qline.tech](https://qline.tech) |
 
-### 3.2. HSTS (HTTP Strict Transport Security)
-* **Risk:** HSTS eksikliği, sitenin SSL/TLS kullanmasına rağmen saldırganların trafiği HTTP'ye düşürmesine (SSL Stripping) olanak sağlar.
-* **Doğru Uygulama:** `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+## 👤 Student / Öğrenci
+| | |
+|---|---|
+| **Name** | Fatma Yeliz Apaydın |
 
-### 3.3. X-Frame-Options (Clickjacking)
-* **Risk:** `SAMEORIGIN` başlığının olmaması, sitenin bir iframe içine gizlenerek "Clickjacking" (tıklama hırsızlığı) saldırısına maruz kalmasına neden olur.
-* **Doğru Uygulama:** `X-Frame-Options: SAMEORIGIN`
+## 📚 Course Information / Ders Bilgileri
+| | |
+|---|---|
+| **Course** | Secure Web Development / Güvenli Web Yazılımı Geliştirme |
+| **Course Code** | BGT208 |
+| **Semester** | 2025-2026 Spring |
 
-### 3.4. X-Content-Type-Options (MIME Sniffing)
-* **Risk:** Bu başlığın eksikliği, tarayıcının yanlış dosya tiplerini yürütmesine ve XSS riskini artırmasına neden olur.
-* **Doğru Uygulama:** `X-Content-Type-Options: nosniff`
+---
 
-## 4. Teknik Çözüm: Önerilen Güvenlik Konfigürasyonu
-Bir web sunucusu (Nginx/Apache) için en güvenli header seti şudur:
+## 📋 Project Overview / Proje Özeti
+Bu proje, 10 farklı popüler web sitesinin **HTTP Güvenlik Başlıkları (Security Headers)** açısından analizini, teknik risk değerlendirmesini ve doğru yapılandırma yöntemlerini içermektedir. Proje, web uygulamalarının siber saldırılara (XSS, MITM, Clickjacking) karşı korunma düzeylerini denetler.
 
-```http
-Strict-Transport-Security: max-age=63072000; includeSubDomains; preload;
-Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none';
-X-Frame-Options: DENY;
-X-Content-Type-Options: nosniff;
-Referrer-Policy: strict-origin-when-cross-origin;
+
+
+---
+
+## 📊 10 Web Sitesi Analiz Matrisi
+Denetim sürecinde uygulanan ölçeklendirme; `SecurityHeaders.com` standartlarına dayanmaktadır.
+
+| Site Adı | Skor | Kritik Başlık Eksiklikleri | Temel Risk |
+| :--- | :---: | :--- | :--- |
+| **1. google.com** | A+ | Yok | - |
+| **2. facebook.com** | A | `Permissions-Policy` | Kısmi API riski |
+| **3. github.com** | A | `Permissions-Policy` | Kısmi API riski |
+| **4. wikipedia.org** | B | `CSP`, `Permissions-Policy` | XSS & Clickjacking |
+| **5. imdb.com** | B | `CSP` yapılandırması | XSS |
+| **6. n11.com** | C | `X-Frame-Options` hatalı | Clickjacking |
+| **7. sahibinden.com**| C | `CSP` eksik | XSS |
+| **8. istinye.edu.tr**| C | `HSTS`, `CSP` eksik | MITM & XSS |
+| **9. hurriyet.com.tr**| D | `CSP`, `HSTS` yok | MITM, XSS |
+| **10. milliyet.com.tr**| D | `CSP`, `HSTS`, `X-Frame` | Tüm vektörler |
+
+---
+
+## 🛠 Teknik Çözüm ve Hardening (Özet)
+Sunucu tarafında uygulanması gereken sıkılaştırılmış konfigürasyon (`src/` altında yer almaktadır):
+
+```nginx
+# Örnek Güvenli Nginx Konfigürasyonu
+add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+add_header Content-Security-Policy "default-src 'self'; script-src 'self'; object-src 'none';" always;
+add_header X-Frame-Options "DENY" always;
+add_header X-Content-Type-Options "nosniff" always;
+🧪 İspat (PoC) ve Bulgular
+Clickjacking: X-Frame-Options barındırmayan siteler iframe içine gömülerek saldırı simüle edilmiştir.
+
+XSS: Content-Security-Policy eksikliği bulunan sitelerde alert() tetiklemesi ile zafiyet ispatlanmıştır.
+
+Detaylar: Tüm ispat çalışmaları ve denetim notları docs/ klasöründe yer almaktadır.
+
+🔗 References / Kaynaklar
+SecurityHeaders.com
+
+OWASP Secure Headers Project
+
+Mozilla Web Security Guidelines
+
+Keyvan Arasteh - QLine Tech
