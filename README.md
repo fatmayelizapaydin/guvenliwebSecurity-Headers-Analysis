@@ -1,44 +1,51 @@
-# 🛡️ Web Güvenlik Denetim Raporu — HTTP Güvenlik Başlıkları Analizi
+# # 🛡️ Web Uygulamaları Güvenlik Konfigürasyon Denetimi (Pentest-Audit)
 
-Bu proje, **BGT208 Güvenli Web Yazılımı Geliştirme** dersi kapsamında, web uygulamalarının siber saldırılara karşı ilk savunma hattı olan **HTTP Güvenlik Başlıkları**'nın (Security Headers) incelenmesi ve yapılandırılması üzerine hazırlanmıştır.
+**Hazırlayan:** Fatma Yeliz Apaydın  
+**Ders:** BGT208 Güvenli Web Yazılımı Geliştirme
 
-## 🎯 Projenin Amacı
-Modern web uygulamalarında; **XSS (Cross-Site Scripting)**, **Clickjacking** ve **Man-in-the-Middle** gibi saldırıları önlemek için sunucu tarafında HTTP başlıklarının doğru yapılandırılması kritiktir. Bu proje, farklı kategorideki sitelerin mevcut güvenlik durumlarını analiz ederek, eksiklikleri tespit etmeyi ve düzeltme önerileri sunmayı hedefler.
+## 1. Projenin Amacı
+Bu çalışma, web uygulamalarının siber saldırılara karşı ilk savunma hattı olan **HTTP Güvenlik Başlıkları'nın (Security Headers)** analizini ve yapılandırmasını konu almaktadır. 10 farklı popüler web sitesi üzerinden gerçekleştirilen bu denetim, modern web saldırılarına (XSS, MITM, Clickjacking) karşı sunucu tarafındaki zafiyetleri ortaya koymayı hedefler.
 
-## 🛠️ Test Araçları ve Yöntem
-Analiz sürecinde şu araçlar ve metodolojiler kullanılmıştır:
-* **[SecurityHeaders.com](https://securityheaders.com/):** Web sitelerinin güvenlik başlıklarını puanlayan ve eksikleri raporlayan temel tarama aracı.
-* **Analiz Metodolojisi:**
-    1. Hedef sitelerin taratılması.
-    2. Eksik başlıkların (CSP, HSTS, X-Frame-Options, vb.) listelenmesi.
-    3. Eksikliklerin neden olduğu olası güvenlik risklerinin raporlanması.
+## 2. 10 Popüler Web Sitesi Güvenlik Denetim Raporu
+Aşağıdaki siteler, `SecurityHeaders.com` standartları baz alınarak analiz edilmiştir:
 
-## 📊 Analiz Sonuçları
-Aşağıdaki tablo, çeşitli sektörlerden seçilen 5 farklı web sitesinin güvenlik yapılandırmasını özetlemektedir:
-
-| Site Adı | Güvenlik Puanı | Temel Eksikler / Riskler |
+| Site Adı | Skor | Kritik Eksiklik / Zayıflık |
 | :--- | :---: | :--- |
-| **google.com** | A+ | Mükemmel yapılandırma, tüm başlıklar tam. |
-| **facebook.com** | A | `Permissions-Policy` eksikliği. |
-| **imdb.com** | B | `CSP` ve `Permissions-Policy` zayıf yapılandırılmış. |
-| **istinye.edu.tr** | C | `HSTS` ve `CSP` tanımlı değil; MITM riski mevcut. |
-| **milliyet.com.tr** | D | Kritik başlıklar eksik; XSS ve Clickjacking'e açık. |
+| **google.com** | A+ | - (Tüm başlıklar optimize) |
+| **facebook.com** | A | `Permissions-Policy` zayıf |
+| **github.com** | A | `Permissions-Policy` eksikliği |
+| **wikipedia.org**| B | `CSP` ve `Permissions-Policy` yok |
+| **imdb.com** | B | `CSP` yapılandırması yetersiz |
+| **istinye.edu.tr**| C | `HSTS` ve `CSP` tanımlı değil |
+| **milliyet.com.tr**| D | Kritik başlıkların çoğu eksik |
+| **hurriyet.com.tr**| D | `CSP` ve `HSTS` eksik |
+| **n11.com** | C | `X-Frame-Options` hatalı |
+| **sahibinden.com**| C | `CSP` başlığı eksik |
 
-## 🔍 Bulgular ve Kritik Değerlendirme
+## 3. Bulgular ve Teknik Risk Analizi
 
-### 1. İçerik Güvenliği Politikası (Content-Security-Policy - CSP)
-* **Durum:** Analiz edilen birçok yerel sitede bu başlığın hiç tanımlanmadığı gözlemlenmiştir.
-* **Risk:** CSP'nin olmaması, sitenin zararlı script (XSS) enjeksiyonlarına karşı savunmasız kalmasına neden olur.
-* **Öneri:** `Content-Security-Policy: default-src 'self';` gibi temel bir politika ile dış kaynaklı scriptlerin çalışması kısıtlanmalıdır.
+### 3.1. Content-Security-Policy (CSP)
+* **Risk:** CSP bulunmayan siteler, XSS (Cross-Site Scripting) saldırılarına karşı tamamen savunmasızdır. Saldırganlar zararlı scriptleri siteye enjekte edebilir.
+* **Doğru Uygulama:** `Content-Security-Policy: default-src 'self';`
 
-### 2. HTTPS Zorunluluğu (HSTS)
-* **Durum:** Özellikle eğitim ve haber sitelerinde HSTS başlığının (HTTP Strict Transport Security) eksik olduğu tespit edilmiştir.
-* **Risk:** Kullanıcıların HTTPS yerine HTTP üzerinden siteye erişmesine izin verilir, bu da "Man-in-the-Middle" saldırılarına zemin hazırlar.
-* **Öneri:** `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload` eklenerek tarayıcıların siteye sadece güvenli yoldan girmesi zorunlu tutulmalıdır.
+### 3.2. HSTS (HTTP Strict Transport Security)
+* **Risk:** HSTS eksikliği, sitenin SSL/TLS kullanmasına rağmen saldırganların trafiği HTTP'ye düşürmesine (SSL Stripping) olanak sağlar.
+* **Doğru Uygulama:** `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
 
-## 🚀 Sonuç
-Güvenlik, sadece kod yazmak değil; sunucu yapılandırmalarını ve tarayıcı politikalarını doğru yönetmektir. Bu proje ile basit bir "HTTP başlığı" eklemenin, bir web uygulamasının güvenliğini nasıl %80 oranında artırabileceğini analiz ettik. 
+### 3.3. X-Frame-Options (Clickjacking)
+* **Risk:** `SAMEORIGIN` başlığının olmaması, sitenin bir iframe içine gizlenerek "Clickjacking" (tıklama hırsızlığı) saldırısına maruz kalmasına neden olur.
+* **Doğru Uygulama:** `X-Frame-Options: SAMEORIGIN`
 
----
-*Hazırlayan: Fatma Yeliz Apaydın  
-*Ders: BGT208 Güvenli Web Yazılımı Geliştirme*# guvenliwebSecurity-Headers-Analysis
+### 3.4. X-Content-Type-Options (MIME Sniffing)
+* **Risk:** Bu başlığın eksikliği, tarayıcının yanlış dosya tiplerini yürütmesine ve XSS riskini artırmasına neden olur.
+* **Doğru Uygulama:** `X-Content-Type-Options: nosniff`
+
+## 4. Teknik Çözüm: Önerilen Güvenlik Konfigürasyonu
+Bir web sunucusu (Nginx/Apache) için en güvenli header seti şudur:
+
+```http
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload;
+Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none';
+X-Frame-Options: DENY;
+X-Content-Type-Options: nosniff;
+Referrer-Policy: strict-origin-when-cross-origin;
