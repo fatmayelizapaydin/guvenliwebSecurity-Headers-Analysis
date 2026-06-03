@@ -1,6 +1,7 @@
 # # 🛡️ Web Uygulamaları Güvenlik Konfigürasyon Denetimi (Pentest-Audit)
 
 **Hazırlayan:** Fatma Yeliz Apaydın  
+Öğrenci numarası:2420191038
 **Ders:** BGT208 Güvenli Web Yazılımı Geliştirme
 
 <div align="center">
